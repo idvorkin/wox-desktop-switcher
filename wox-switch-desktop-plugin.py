@@ -1,8 +1,8 @@
 from wox import Wox
 # from wox import WoxAPI
-import time
+# import time
+import subprocess
 
-from ctypes import cdll
 
 # from wox import Wox
 
@@ -38,29 +38,35 @@ from ctypes import cdll
 '''
 
 
-class HelloWorld(Wox):
+class SwitchDesktop(Wox):
 
     def query(self, query):
         results = []
         results.append({
-            "Title": "Goto Desktop X",
-            "SubTitle": "Goto Desktop: {}".format(query),
+            "Title": "Goto Desktop Z",
+            "SubTitle": f"Goto Desktop: {query}",
             "IcoPath": "Images/app.ico",
             "JsonRPCAction": {
-                "method": "gotoDesktop", "parameters": [query, "trash"]
+                "method": "gotoDesktop", "parameters": [query]
                 }
         })
 
         return results
 
-    def gotoDesktop(self, desktop, trash):
+    def gotoDesktop(self, desktop):
+        # The following code will crash wox, so executing it via a sub process call
+        # Instead.
+        '''
         try:
+            from ctypes import cdll
             vda = cdll.LoadLibrary("VirtualDesktopAccessor")
             desktopNumber = int(desktop)
             vda.GoToDesktopNumber(desktopNumber)
-            time.sleep(1)
-        except ValueError:
+        except:
             pass
+        '''
+        subprocess.call(f'python cli-switch-desktop.py {desktop}')
+
         return
 
     def context_menu(self, data):
@@ -74,4 +80,4 @@ class HelloWorld(Wox):
 
 
 if __name__ == "__main__":
-    HelloWorld()
+    SwitchDesktop()
